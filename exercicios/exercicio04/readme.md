@@ -19,13 +19,13 @@ Praticar a criação de classes em PHP consolidando:
 ## 📝 Enunciado
 
 > **Namespace:** ambas as classes devem ser criadas dentro da namespace `source\Models\Faq`.
-> Crie os arquivos `Type.php` e `Faq.php` na pasta `source/Models/Faq/`.
+> Crie os arquivos `Type.php` e `Question.php` na pasta `source/Models/Faq/`.
 
 ### Classe `Type`
 
 1. Crie a classe `Type` com os seguintes atributos privados:
-    - `id` (int)
-    - `name` (string) — ex.: "Inscrições", "Sobre o Evento", "Organização"
+   - `id` (int)
+   - `name` (string) — ex.: "Inscrições", "Sobre o Evento", "Organização"
 
 2. Implemente o método construtor que receba e inicialize os dois atributos.
 
@@ -33,13 +33,13 @@ Praticar a criação de classes em PHP consolidando:
 
 4. Implemente um método chamado `show` que retorne as informações formatadas do tipo (`Categoria: #id - Nome: Nome`).
 
-### Classe `Faq`
+### Classe `Question`
 
-1. Crie a classe `Faq` com os seguintes atributos privados:
-    - `id` (int)
-    - `question` (string)
-    - `answer` (string)
-    - `type` (Type) — objeto da classe `Type` que representa a categoria da pergunta
+1. Crie a classe `Question` com os seguintes atributos privados:
+   - `id` (int)
+   - `question` (string)
+   - `answer` (string)
+   - `type` (Type) — objeto da classe `Type` que representa a categoria da pergunta
 
 2. Implemente o método construtor que receba e inicialize os quatro atributos.
 
@@ -58,14 +58,13 @@ Praticar a criação de classes em PHP consolidando:
 1. Importe as classes utilizando `use`:
    ```php
    use source\Models\Faq\Type;
-   use source\Models\Faq\Faq;
+   use source\Models\Faq\Question;
    ```
 2. Instancie pelo menos **dois** objetos `Type` representando categorias diferentes (ex.: "Inscrições" e "Sobre o Evento").
-3. Instancie pelo menos **duas** FAQs, cada uma vinculada a um tipo diferente.
+3. Instancie pelo menos **duas** Questions, cada uma vinculada a um tipo diferente.
 4. Utilize getters e setters para consultar e atualizar atributos após a criação dos objetos.
 5. Exiba o resultado chamando `show()` de cada FAQ e imprimindo com `echo`.
 
 5. Garanta que o código continue legível e organizado, mantendo o mesmo nível de dificuldade dos exercícios anteriores.
 
 > Experimente criar mais categorias e perguntas para simular um FAQ completo do site da MOCITEC.
-
