@@ -8,7 +8,7 @@ class Product
     private $name;
     private $price;
 
-    public function __construct(int $id = null, string $name = null, int $price = null)
+    public function __construct(?int $id = null, ?string $name = null, ?int $price = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -43,6 +43,18 @@ class Product
     public function setPrice(int $price): void
     {
         $this->price = $price;
+    }
+
+    public function discount (float $discount): void
+    {
+        $discountTotal = $discount / 100 * $this->price;
+        $this->price = $this->price - $discountTotal;
+    }
+
+    public function show() : void
+    {
+        $formatPrice = number_format($this->price, 2, ',', '.');
+        echo $formatPrice;
     }
 
 }
