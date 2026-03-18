@@ -39,7 +39,7 @@ Praticar a criação de classes em PHP consolidando:
    - `id` (int)
    - `question` (string)
    - `answer` (string)
-   - `type` (Type) — objeto da classe `Type` que representa a categoria da pergunta
+   - `type` (int)
 
 2. Implemente o método construtor que receba e inicialize os quatro atributos.
 
