@@ -68,5 +68,4 @@ var_dump($client);
 $personal = new Personal("Fábio Santos", "fabio@gmail.com", "09876546789");
 var_dump($personal);
 $personal->showPersonal();
-
-
+phpinfo();
