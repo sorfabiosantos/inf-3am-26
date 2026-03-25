@@ -7,7 +7,7 @@ class Professor
     private ?string $name;
     private ?string $email;
 
-    public function __construct(?string $name, ?string $email = null)
+    public function __construct(?string $name = null, ?string $email = null)
     {
         $this->name = $name;
         $this->email = $email;
@@ -30,10 +30,20 @@ class Course
     private ?int $workload;
     private ?Professor $professor;
 
-    public function __construct(?string $title, ?int $workload, ?Professor $professor)
+    public function __construct(?string $title, ?int $workload, ?Professor $professor = null)
     {
         $this->title = $title;
         $this->workload = $workload;
+        $this->professor = $professor;
+    }
+
+    public function getProfessor(): ?Professor
+    {
+        return $this->professor;
+    }
+
+    public function setProfessor(?Professor $professor): void
+    {
         $this->professor = $professor;
     }
 
@@ -52,3 +62,20 @@ $course = new Course("PHP OOP", 40, $professor);
 echo "Exemplo de Associação" . "<br>";
 echo "----------------------" . "<br>";
 echo $course->describe() . "<br>";
+
+$coursePHP = new Course("PHP OOP", 40, new Professor("Fábio", "fabio@gmail.com"));
+var_dump($coursePHP);
+
+class Address
+{
+    private string $street;
+    private string $city;
+    private string $state;
+}
+
+class Person
+{
+    private string $name;
+    private string $email;
+    private Address $address;
+}
