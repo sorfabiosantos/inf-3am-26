@@ -1,7 +1,7 @@
 <?php
 
 abstract class PaymentMethod {
-    protected $amount;
+    protected float $amount;
 
     public function __construct($amount)
     {
@@ -10,7 +10,7 @@ abstract class PaymentMethod {
 
     public function displayAmount(): string
     {
-        return "Payment amount: R$ " . number_format($this->amount, 2, ',', '.');
+        return "Pagamento: R$ " . number_format($this->amount, 2, ',', '.');
     }
     
     abstract public function process();
