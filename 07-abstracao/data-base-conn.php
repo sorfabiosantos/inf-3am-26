@@ -4,8 +4,9 @@ require __DIR__ . "/../source/autoload.php";
 
 use source\Core\Connect;
 
-//$user = Connect::getInstance();
-//$users = $user->query("SELECT * FROM users");
-//var_dump($users->fetchAll());
-$users = Connect::getInstance()->query("SELECT * FROM users")->fetchAll();
+$conn = Connect::getInstance();
+var_dump($conn);
+$user = $conn->query("SELECT * FROM users");
+var_dump($user);
+$users = $user->fetchAll();
 var_dump($users);
