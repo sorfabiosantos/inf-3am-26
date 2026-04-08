@@ -19,8 +19,8 @@ Praticar **encapsulamento** em PHP modelando um sistema hospitalar seguro:
 
 ## 📝 Enunciado
 
-> **Namespace:** todas as classes deste exercício devem ser criadas dentro da namespace `source\Models\Hospital`.
-> Crie os arquivos na pasta `source/Models/Hospital/`.
+> **Namespace:** todas as classes deste exercício devem ser criadas dentro da namespace `source\Models\HospitalGeral`.
+> Crie os arquivos na pasta `source/Models/HospitalGeral/`.
 
 ### Classe `Doctor` (Médico)
 
@@ -109,9 +109,9 @@ Praticar **encapsulamento** em PHP modelando um sistema hospitalar seguro:
 
 1. Importe as classes utilizando `use`:
    ```php
-   use source\Models\Hospital\Doctor;
-   use source\Models\Hospital\Patient;
-   use source\Models\Hospital\MedicalRecord;
+   use source\Models\HospitalGeral\Doctor;
+   use source\Models\HospitalGeral\Patient;
+   use source\Models\HospitalGeral\MedicalRecord;
    ```
 
 2. Instancie pelo menos **dois** objetos `Doctor` com especialidades diferentes.
