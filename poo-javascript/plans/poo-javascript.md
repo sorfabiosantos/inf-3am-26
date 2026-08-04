@@ -3,8 +3,9 @@
 > **Disciplina**: Programação Web II  
 > **Domínio**: Projeto ACME 3AM (e-commerce)  
 > **Padrão**: Código em inglês, explicações/documentação em português  
-> **Scripts**: `views/poo-lab/`  
-> **HTMLs (raiz do projeto)**: `oo-prototypal.html`, `creation-objects.html`, `cloning-objects.html`, `mutability-objects.html`, `inheritance-prototype.html`, `constructor-functions.html`  
+> **Scripts**: `assets/scripts/`  
+> **Styles**: `assets/styles/`  
+> **HTMLs (raiz do projeto)**: `index.html`, `oo-prototypal.html`, `creation-objects.html`, `cloning-objects.html`, `mutability-objects.html`, `inheritance-prototype.html`, `constructor-functions.html`  
 > **Convenção de nomes**: kebab-case para arquivos de script
 
 ---
@@ -12,8 +13,9 @@
 ## Estrutura de arquivos
 
 ```
-raiz-do-projeto/
+poo-javascript/
 │
+├── index.html                    ← Página inicial com links para os tópicos
 ├── oo-prototypal.html            ← Abrir no navegador, ver console
 ├── creation-objects.html
 ├── cloning-objects.html
@@ -21,13 +23,21 @@ raiz-do-projeto/
 ├── inheritance-prototype.html
 ├── constructor-functions.html
 │
-└── views/poo-lab/                ← Scripts JS importados pelos HTMLs
-    ├── oo-prototypal.js          (8.1)
-    ├── creation-objects.js       (8.2)
-    ├── cloning-objects.js        (8.3)
-    ├── mutability-objects.js     (8.4)
-    ├── inheritance-prototype.js  (8.5)
-    └── constructor-functions.js  (8.6)
+├── assets/
+│   ├── scripts/                  ← Scripts JS importados pelos HTMLs
+│   │   ├── oo-prototypal.js          (8.1)
+│   │   ├── creation-objects.js       (8.2)
+│   │   ├── cloning-objects.js        (8.3)
+│   │   ├── mutability-objects.js     (8.4)
+│   │   ├── inheritance-prototype.js  (8.5)
+│   │   └── constructor-functions.js  (8.6)
+│   │
+│   └── styles/                   ← Estilos CSS
+│       └── base.css              (estilos compartilhados)
+│
+└── plans/                        ← Documentação e planejamento
+    ├── plano-de-ensino.md
+    └── poo-javascript.md
 ```
 
 ---
@@ -118,16 +128,16 @@ console.log(mouse.hasOwnProperty("getFormattedPrice")); // false — está no pr
 ### 🏋️ Exercícios — Semana 1
 
 **1. Criação de objeto protótipo**  
-Crie um objeto `pessoa` com propriedades `nome` e `idade`, e um método `apresentar()` que retorna `"Olá, me chamo [nome] e tenho [idade] anos"`. Depois, crie três objetos que herdam de `pessoa` usando `Object.create()`.
+Crie um objeto `person` (pessoa) com propriedades `name` (nome) e `age` (idade), e um método `introduce()` (apresentar) que retorna `"Olá, me chamo [nome] e tenho [idade] anos"`. Depois, crie três objetos que herdam de `person` usando `Object.create()`.
 
 **2. Cadeia de protótipos**  
-Crie uma cadeia de herança: `Veiculo` → `Carro` → `meuCarro`. Cada nível deve adicionar propriedades ou métodos. Use `Object.getPrototypeOf()` para verificar a cadeia.
+Crie uma cadeia de herança: `Vehicle` (veículo) → `Car` (carro) → `myCar` (meu carro). Cada nível deve adicionar propriedades ou métodos. Use `Object.getPrototypeOf()` para verificar a cadeia.
 
 **3. Property shadowing (sombreamento)**  
-Crie um objeto `aluno` com protótipo contendo método `calcularMedia()`. No objeto filho, adicione uma propriedade `nota` que sombreie uma possível `nota` do protótipo. Use `hasOwnProperty()` para comprovar.
+Crie um objeto `student` (aluno) com protótipo contendo método `calculateAverage()` (calcular média). No objeto filho, adicione uma propriedade `grade` (nota) que sombreie uma possível `grade` do protótipo. Use `hasOwnProperty()` para comprovar.
 
 **4. Modificação em runtime**  
-Crie um objeto `biblioteca` e dois livros herdando dele. Adicione um método `renovarCatalogo()` ao protótipo **depois** de criar os livros. Demonstre que ambos os livros passam a ter o método.
+Crie um objeto `library` (biblioteca) e dois objetos `book` (livro) herdando dele. Adicione um método `renewCatalog()` (renovar catálogo) ao protótipo **depois** de criar os livros. Demonstre que ambos os livros passam a ter o método.
 
 ---
 
@@ -217,19 +227,19 @@ Object.defineProperty(user, "email", {
 ### 🏋️ Exercícios — Semana 2
 
 **1. Comparação de técnicas**  
-Crie o mesmo objeto `produto` (nome, preco, categoria) usando as 4 formas: literal, `new Object()`, factory function e `Object.create()`. Compare sintaxe e facilidade de reutilização.
+Crie o mesmo objeto `product` (produto) com propriedades `name` (nome), `price` (preço), `category` (categoria) usando as 4 formas: literal, `new Object()`, factory function e `Object.create()`. Compare sintaxe e facilidade de reutilização.
 
 **2. Factory function reutilizável**  
-Implemente uma factory `criarUsuario(nome, email, perfil)` que retorna objetos com método `exibirDados()`. Crie 3 usuários diferentes e invoque o método de cada um.
+Implemente uma factory `createUser(name, email, role)` (criar usuário - nome, email, perfil) que retorna objetos com método `displayData()` (exibir dados). Crie 3 usuários diferentes e invoque o método de cada um.
 
 **3. Getters e setters avançados**  
-Crie um objeto `conta` com saldo privado (usando closure ou WeakMap). Adicione getter `saldo` e métodos `depositar(valor)` e `sacar(valor)`. O saldo nunca pode ser negativo.
+Crie um objeto `account` (conta) com `balance` (saldo) privado (usando closure ou WeakMap). Adicione getter `balance` e métodos `deposit(amount)` (depositar - valor) e `withdraw(amount)` (sacar - valor). O saldo nunca pode ser negativo.
 
 **4. Configuração de propriedades**  
-Use `Object.defineProperty()` para criar um objeto `config` onde:
-- `versao` é somente leitura (`writable: false`)
-- `apiKey` não aparece em `for...in` (`enumerable: false`)
-- `modo` não pode ser deletado (`configurable: false`)
+Use `Object.defineProperty()` para criar um objeto `config` (configuração) onde:
+- `version` (versão) é somente leitura (`writable: false`)
+- `apiKey` (chave API) não aparece em `for...in` (`enumerable: false`)
+- `mode` (modo) não pode ser deletado (`configurable: false`)
 
 ---
 
@@ -308,12 +318,12 @@ console.log("Deep items:   ", deepCart.items);         // array independente
 ### 🏋️ Exercícios — Semana 3
 
 **1. Shallow vs. Deep copy na prática**  
-Crie um objeto `pessoa` com propriedades simples (nome, idade) e aninhadas (endereço: {rua, cidade}). Faça duas cópias: uma com `{...spread}` e outra com `structuredClone()`. Modifique `endereco.cidade` em cada cópia e observe o comportamento.
+Crie um objeto `person` (pessoa) com propriedades simples `name` (nome), `age` (idade) e aninhadas `address` (endereço): `{street (rua), city (cidade)}`. Faça duas cópias: uma com `{...spread}` e outra com `structuredClone()`. Modifique `address.city` em cada cópia e observe o comportamento.
 
 **2. Problema do JSON.parse/stringify**  
-Crie um objeto com:
-- Uma data (`new Date()`)
-- Uma função (`calcularIdade()`)
+Crie um objeto `user` (usuário) com:
+- Uma data `birthdate` (data de nascimento) (`new Date()`)
+- Uma função `calculateAge()` (calcular idade)
 - Um valor `undefined`
 Clone usando `JSON.parse(JSON.stringify())` e identifique o que foi perdido.
 
@@ -321,7 +331,7 @@ Clone usando `JSON.parse(JSON.stringify())` e identifique o que foi perdido.
 Implemente os 3 métodos de clonagem (spread, structuredClone, JSON) em objetos com diferentes características (aninhados, com funções, com Dates). Monte uma tabela mostrando o que cada técnica preserva.
 
 **4. Clonagem seletiva**  
-Crie uma função `clonarSemSensiveis(objeto)` que faça deep copy de um objeto, mas **remove** propriedades como `senha`, `cpf`, `cartaoCredito` antes de retornar a cópia.
+Crie uma função `cloneWithoutSensitive(object)` (clonar sem dados sensíveis - objeto) que faça deep copy de um objeto, mas **remove** propriedades como `password` (senha), `ssn` (cpf), `creditCard` (cartão de crédito) antes de retornar a cópia.
 
 ---
 
@@ -424,16 +434,16 @@ console.table({
 ### 🏋️ Exercícios — Semana 4
 
 **1. Quebrar o mito do const**  
-Crie um objeto `const usuario = {nome: "Ana"}`. Modifique propriedades, adicione novas, delete existentes. Explique por que `const` não impede mutação do objeto.
+Crie um objeto `const user = {name: "Ana"}` (usuário - nome). Modifique propriedades, adicione novas, delete existentes. Explique por que `const` não impede mutação do objeto.
 
 **2. Níveis de proteção**  
-Crie um objeto `config` e aplique os 3 níveis: `Object.freeze()`, `Object.seal()`, `Object.preventExtensions()`. Monte uma tabela comparando o que cada um permite/bloqueia.
+Crie um objeto `config` (configuração) e aplique os 3 níveis: `Object.freeze()`, `Object.seal()`, `Object.preventExtensions()`. Monte uma tabela comparando o que cada um permite/bloqueia.
 
 **3. Deep freeze recursivo**  
-Implemente uma função `deepFreeze(objeto)` que congela o objeto e **todos os seus objetos aninhados** recursivamente. Teste com estrutura de 3 níveis.
+Implemente uma função `deepFreeze(object)` (congelar profundamente - objeto) que congela o objeto e **todos os seus objetos aninhados** recursivamente. Teste com estrutura de 3 níveis.
 
 **4. Sistema de permissões**  
-Crie objetos representando diferentes perfis de usuário (admin, editor, leitor). Use freeze/seal para garantir que:
+Crie objetos representando diferentes perfis de usuário: `admin` (administrador), `editor` (editor), `reader` (leitor). Use freeze/seal para garantir que:
 - Admin pode tudo
 - Editor pode modificar, mas não adicionar propriedades (seal)
 - Leitor é read-only (freeze)
@@ -550,16 +560,16 @@ console.log(item.hasOwnProperty("getInfo")); // false — está no protótipo
 ### 🏋️ Exercícios — Semana 5
 
 **1. Cadeia de herança prototípica**  
-Crie uma cadeia: `Animal` → `Mamifero` → `Cachorro` → `meuPet`. Cada nível adiciona propriedades e métodos. Use `Object.getPrototypeOf()` e `isPrototypeOf()` para navegar/validar a cadeia.
+Crie uma cadeia: `Animal` (animal) → `Mammal` (mamífero) → `Dog` (cachorro) → `myPet` (meu pet). Cada nível adiciona propriedades e métodos. Use `Object.getPrototypeOf()` e `isPrototypeOf()` para navegar/validar a cadeia.
 
 **2. Property shadowing intencional**  
-Crie um objeto `funcionario` que herda de `pessoa`. Adicione um método `apresentar()` no filho que **complementa** (não substitui) o do pai. Use `Object.getPrototypeOf(this).apresentar()` para chamar o método pai.
+Crie um objeto `employee` (funcionário) que herda de `person` (pessoa). Adicione um método `introduce()` (apresentar) no filho que **complementa** (não substitui) o do pai. Use `Object.getPrototypeOf(this).introduce()` para chamar o método pai.
 
 **3. Modificação dinâmica do protótipo**  
-Crie vários objetos herdando de um protótipo. Adicione um método ao protótipo **depois** que os objetos foram criados. Demonstre que todos passam a ter o método imediatamente.
+Crie vários objetos herdando de um protótipo `Vehicle` (veículo). Adicione um método `start()` (iniciar) ao protótipo **depois** que os objetos foram criados. Demonstre que todos passam a ter o método imediatamente.
 
 **4. Verificação de herança**  
-Implemente uma função `ehTipoDeVeiculo(objeto)` que retorna `true` se o objeto (direta ou indiretamente) herda de um protótipo `Veiculo`. Use `isPrototypeOf()` ou `Object.getPrototypeOf()`.
+Implemente uma função `isVehicleType(object)` (é tipo de veículo - objeto) que retorna `true` se o objeto (direta ou indiretamente) herda de um protótipo `Vehicle` (veículo). Use `isPrototypeOf()` ou `Object.getPrototypeOf()`.
 
 ---
 
@@ -726,22 +736,22 @@ console.log(digital2.getDownloadInfo());  // próprio
 ### 🏋️ Exercícios — Semana 6
 
 **1. Função construtora básica**  
-Crie uma função `Livro(titulo, autor, ano)` que usa `this`. Instancie 3 livros com `new`. Adicione um método `exibirInfo()` no `.prototype` e demonstre que todos os livros têm acesso.
+Crie uma função `Book(title, author, year)` (livro - título, autor, ano) que usa `this`. Instancie 3 livros com `new`. Adicione um método `displayInfo()` (exibir info) no `.prototype` e demonstre que todos os livros têm acesso.
 
 **2. Herança com call() e Object.create()**  
-Implemente herança entre `Pessoa` (nome, idade) e `Aluno` (nome, idade, curso). Use `Pessoa.call(this, ...)` no construtor de `Aluno` e configure `Aluno.prototype = Object.create(Pessoa.prototype)`.
+Implemente herança entre `Person` (pessoa) com `name` (nome), `age` (idade) e `Student` (aluno) adicionando `course` (curso). Use `Person.call(this, ...)` no construtor de `Student` e configure `Student.prototype = Object.create(Person.prototype)`.
 
 **3. Class vs. Função construtora**  
-Implemente a mesma hierarquia `Veiculo → Carro` de duas formas:
+Implemente a mesma hierarquia `Vehicle` (veículo) → `Car` (carro) de duas formas:
 - Com funções construtoras + .prototype
 - Com `class` + `extends` + `super()`
 Compare a sintaxe e funcionalidade resultante.
 
 **4. Projeto integrador — Sistema de produtos**  
 Crie uma hierarquia:
-- `Produto` (id, nome, preco) com método `calcularDesconto(percentual)`
-- `ProdutoFisico` (adiciona peso, calcularFrete())
-- `ProdutoDigital` (adiciona tamanhoMB, getDownloadLink())
+- `Product` (produto) com `id`, `name` (nome), `price` (preço) e método `calculateDiscount(percentage)` (calcular desconto - percentual)
+- `PhysicalProduct` (produto físico) adiciona `weight` (peso), `calculateShipping()` (calcular frete)
+- `DigitalProduct` (produto digital) adiciona `fileSizeMB` (tamanho em MB), `getDownloadLink()` (obter link de download)
 Use `class` e implemente 2 instâncias de cada tipo. Demonstre herança e polimorfismo.
 
 ---
