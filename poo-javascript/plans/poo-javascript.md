@@ -50,8 +50,8 @@ poo-javascript/
 | **Semana 2** | 8.2 — Criação de Objetos | Literal, `Object.create`, `Object.assign`, `Object.defineProperty` |
 | **Semana 3** | 8.3 — Clonagem de Objetos | Shallow copy, deep copy, `structuredClone`, `JSON.parse(JSON.stringify)` |
 | **Semana 4** | 8.4 — Mutabilidade de Objetos | `const` vs mutabilidade, `freeze`, `seal`, `preventExtensions` |
-| **Semana 5** | 8.5 — Herança por Protótipo | Cadeia com `Object.create`, property shadowing, `hasOwnProperty` |
-| **Semana 6** | 8.6 — Funções Construtoras | `new`, `.prototype`, `instanceof`, `class`, `extends`, `super` |
+| **Semana 5** | 8.5 — Herança por Protótipo | Cadeia com `Object.create`, property shadowing, `Object.hasOwn()`, composição/mixins |
+| **Semana 6** | 8.6 — Funções Construtoras | `new`, `.prototype`, `instanceof`, `class`, `extends`, `super`, `#private fields`, static init blocks |
 
 Cada semana tem **4 períodos de 45 min** (3h/aula).
 
@@ -76,9 +76,10 @@ Cada semana tem **4 períodos de 45 min** (3h/aula).
 
 | Conceito | O que mostrar |
 |---|---|
-| Todo objeto tem um protótipo | `typeof {}`, `Object.getPrototypeOf({})`, `{}.__proto__` |
+| Todo objeto tem um protótipo | `typeof {}`, `Object.getPrototypeOf({})`, `{}.__proto__` **(nota didática: `__proto__` é obsoleto; usar `Object.getPrototypeOf()` em código real)** |
 | Cadeia de protótipos (prototype chain) | `Object.prototype` como raiz da cadeia. `Array.prototype`, `Function.prototype` também são objetos ligados em cadeia |
 | Contraste com OO clássica | Em Java/PHP: classes são "moldes", objetos são "instâncias". Em JS: objetos delegam para outros objetos via `[[Prototype]]` |
+| `Object.hasOwn()` (ES2022) | Substituto moderno e mais seguro para `obj.hasOwnProperty()` — evita problemas de shadowing |
 
 #### Exemplo de demonstração interativa (console)
 
@@ -473,7 +474,8 @@ Crie objetos representando diferentes perfis de usuário: `admin` (administrador
 | `Object.setPrototypeOf(obj, proto)` | Altera o protótipo de um objeto existente (custo de performance — evitar em loops) |
 | `Object.getPrototypeOf(obj)` | Obtém o protótipo atual de um objeto |
 | Sombra de propriedade (property shadowing) | Se o objeto possui uma propriedade com o mesmo nome do protótipo, a do objeto "sombreia" a do protótipo |
-| `hasOwnProperty()` | Verifica se a propriedade pertence ao próprio objeto (não ao protótipo) |
+| `Object.hasOwn(obj, prop)` (ES2022) | Substituto moderno de `hasOwnProperty()` — verifica se a propriedade pertence ao próprio objeto |
+| **Composição / Mixins** | Alternativa à herança profunda: compor objetos com `Object.assign()` combinando múltiplos comportamentos (ex: `canLog`, `canSerialize`, `canDiscount`). Mais flexível e menos acoplado que cadeias longas de herança |
 
 #### Exemplo de demonstração
 
@@ -581,7 +583,7 @@ Implemente uma função `isVehicleType(object)` (é tipo de veículo - objeto) q
 |---|---|---|
 | **1º** | 45 min | Função construtora com `new`, `.prototype`, `instanceof` |
 | **2º** | 45 min | Herança com `call()` + `Object.create()` |
-| **3º** | 45 min | `class` como syntactic sugar; `extends` e `super()` |
+| **3º** | 45 min | `class` como syntactic sugar; `extends` e `super()`; `#private fields` (ES2022) e static init blocks |
 | **4º** | 45 min | **Exercícios práticos** + revisão geral da unidade |
 
 ---
@@ -596,6 +598,8 @@ Implemente uma função `isVehicleType(object)` (é tipo de veículo - objeto) q
 | `Constructor.prototype` | Todo construtor tem `.prototype` — este será o `[[Prototype]]` das instâncias |
 | `instanceof` | Verifica se um objeto está na cadeia de protótipos de um construtor |
 | `class` (ES6) | Syntactic sugar sobre funções construtoras. Por baixo, ainda é prototípico |
+| `#private fields` (ES2022) | Campos verdadeiramente privados com prefixo `#` — não acessíveis fora da classe |
+| `static` initialization blocks (ES2022) | Blocos `static { ... }` para inicialização complexa de membros estáticos |
 | Comparação lado a lado | Mostrar a mesma "classe" escrita como função construtora e como `class` |
 
 #### Exemplo de demonstração
@@ -764,20 +768,20 @@ Use `class` e implemente 2 instâncias de cada tipo. Demonstre herança e polimo
 | **Semana 2** | 8.2 — Formas de criar objetos | Factory functions | Getters/setters | **Exercícios práticos** |
 | **Semana 3** | 8.3 — Shallow copy (spread, assign) | Problema de referências aninhadas | Deep copy (structuredClone, JSON) | **Exercícios práticos** |
 | **Semana 4** | 8.4 — const vs. mutabilidade | Object.freeze() | Object.seal() e preventExtensions() | **Exercícios práticos** |
-| **Semana 5** | 8.5 — Object.create() herança | Cadeia de protótipos | getPrototypeOf(), isPrototypeOf() | **Exercícios práticos** |
-| **Semana 6** | 8.6 — Funções construtoras | Herança (call + Object.create) | class, extends, super | **Exercícios + revisão geral** |
+| **Semana 5** | 8.5 — Object.create() herança | Cadeia de protótipos + Object.hasOwn() | Composição/Mixins (alternativa à herança) | **Exercícios práticos** |
+| **Semana 6** | 8.6 — Funções construtoras | Herança (call + Object.create) | class, extends, super + #private fields | **Exercícios + revisão geral** |
 
 ---
 
 ## Checklist de preparação
 
-### Arquivos JavaScript (em `views/poo-lab/`)
-- [x] `oo-prototypal.js` — 8.1 OO Prototípica
-- [x] `creation-objects.js` — 8.2 Criação de Objetos
-- [x] `cloning-objects.js` — 8.3 Clonagem de Objetos
-- [x] `mutability-objects.js` — 8.4 Mutabilidade de Objetos
-- [x] `inheritance-prototype.js` — 8.5 Herança por Protótipo
-- [x] `constructor-functions.js` — 8.6 Funções Construtoras
+### Arquivos JavaScript (em `assets/scripts/`)
+- [x] `oo-prototypal.js` — 8.1 OO Prototípica (+ nota sobre `__proto__` deprecated, `Object.hasOwn()`)
+- [x] `creation-objects.js` — 8.2 Criação de Objetos (+ exercícios como comentários)
+- [x] `cloning-objects.js` — 8.3 Clonagem de Objetos (+ feature detection p/ `structuredClone()`)
+- [x] `mutability-objects.js` — 8.4 Mutabilidade de Objetos (+ exercícios como comentários)
+- [x] `inheritance-prototype.js` — 8.5 Herança por Protótipo (+ `Object.hasOwn()`, composição/mixins)
+- [x] `constructor-functions.js` — 8.6 Funções Construtoras (+ `#private fields` ES2022, static init blocks)
 
 ### Arquivos HTML (na raiz do projeto)
 - [x] `oo-prototypal.html` — tela para semana 1
@@ -789,10 +793,23 @@ Use `class` e implemente 2 instâncias de cada tipo. Demonstre herança e polimo
 
 ### Material didático
 - [ ] Slides ou roteiro para cada semana (1-6)
-- [x] Listas de exercícios integradas ao plano (4 exercícios por semana)
-- [ ] Gabaritos comentados dos exercícios
+- [x] Listas de exercícios integradas ao plano (4 exercícios por semana + exercícios extras nos .js)
+- [x] Gabaritos comentados dos exercícios (`plans/gabarito-exercicios.js` — gitignored para alunos)
 - [x] Projeto integrador final (Semana 6 - exercício 4)
+
+### Recursos modernos adicionados (ES2022+)
+- [x] `#private fields` e `#private methods` — Semana 6 (`constructor-functions.js`)
+- [x] `static` initialization blocks — Semana 6 (`constructor-functions.js`)
+- [x] `Object.hasOwn()` como substituto de `hasOwnProperty()` — Semanas 1 e 5
+- [x] Composição/Mixins via `Object.assign()` — Semana 5 (`inheritance-prototype.js`)
+- [x] CSS custom properties (`:root`) em `base.css`
+- [x] Template literals padronizados em todos os scripts
+- [x] `console.group()` / `console.groupEnd()` em todos os scripts
+- [x] Nota sobre arrow functions e `this` léxico — Semanas 2 e 6
+- [x] Optional chaining (`?.`) e nullish coalescing (`??`) — Semana 2
+- [x] `Symbol` como propriedade semi-privada (contexto histórico pré-ES2022) — Semana 6
 
 ### Verificação técnica
 - [ ] Testar todos os exemplos no console do navegador (Chrome/Firefox)
-- [ ] Verificar compatibilidade: `structuredClone()` disponível a partir do Chrome 98 / Firefox 94
+- [x] Feature detection para `structuredClone()` implementado (fallback amigável)
+- [x] Verificar compatibilidade: `structuredClone()` disponível a partir do Chrome 98 / Firefox 94
