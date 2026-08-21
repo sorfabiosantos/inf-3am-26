@@ -82,7 +82,7 @@ console.groupEnd();
 
 // 1. Crie um objeto `person` com `name`, `age` e método `introduce()`
 //    que retorna "Olá, me chamo [nome] e tenho [idade] anos".
-//    Depois crie 3 objetos herdando de `person` via Object.create().
+//    Depois crie 3 objetos herdando de `person` via Object.create().       
 
 // 2. Crie uma cadeia: Vehicle → Car → myCar.
 //    Cada nível adiciona propriedades/métodos.
