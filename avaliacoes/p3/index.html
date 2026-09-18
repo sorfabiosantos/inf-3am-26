@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P3 - Prova C - Catalogo de oficinas</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <main class="shell">
+        <header class="hero">
+            <p class="eyebrow">Programacao Web II · avaliacao hibrida</p>
+            <h1>Catalogo de oficinas</h1>
+            <p>Use o console para a Parte 1 e complete a interface orientada a objetos para a Parte 2.</p>
+        </header>
+
+        <section class="card" aria-labelledby="catalog-title">
+            <div class="section-heading">
+                <div><p class="eyebrow">Parte 2 · catalogo</p><h2 id="catalog-title">Encontre uma oficina</h2></div>
+                <span class="badge">dados locais</span>
+            </div>
+            <div class="filters">
+                <label for="instructor-filter">Instrutor
+                    <select id="instructor-filter" name="instructor_id">
+                        <option value="">Todos os instrutores</option>
+                    </select>
+                </label>
+                <label for="workshop-filter">Buscar por titulo
+                    <input id="workshop-filter" type="search" placeholder="Ex.: objetos">
+                </label>
+            </div>
+            <p id="catalog-status" class="muted" aria-live="polite">Carregando oficinas...</p>
+            <div id="workshop-list" class="list" aria-live="polite">
+                <p class="empty">Carregando oficinas...</p>
+            </div>
+        </section>
+
+        <section class="card detail-card" aria-labelledby="detail-title">
+            <div class="section-heading"><div><p class="eyebrow">Detalhes</p><h2 id="detail-title">Selecione uma oficina</h2></div></div>
+            <div id="workshop-detail"><p class="empty">Clique em "Ver ementa" para consultar os detalhes.</p></div>
+        </section>
+
+        <div class="toast" data-toast role="status" aria-live="polite"></div>
+        <footer><a href="README.md">Abrir enunciado completo</a></footer>
+    </main>
+    <script src="assets/script.js"></script>
+</body>
+</html>
