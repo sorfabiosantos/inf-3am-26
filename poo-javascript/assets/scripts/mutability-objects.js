@@ -98,3 +98,107 @@ console.groupEnd();
 // 4. Crie objetos representando perfis de usuário:
 //    `admin` (pode tudo), `editor` (seal — modifica, não adiciona),
 //    `reader` (freeze — somente leitura).
+
+// =====================================================
+// RESOLUÇÕES — Semana 4
+// =====================================================
+
+{
+    console.group("Exercício 1 — const e mutabilidade");
+    // const impede trocar a referência, mas não congela as propriedades do objeto.
+    const user = { name: "Ana" };
+    user.name = "Ana Souza";
+    user.age = 22;
+    delete user.name;
+
+    console.log("Objeto após alteração, adição e remoção:", user);
+    console.log("const protege a referência da variável; as propriedades do objeto continuam mutáveis.");
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 2 — Comparação dos bloqueios");
+    // Reflect retorna true/false para as operações, sem lançar erro em propriedades bloqueadas.
+    const baseConfig = { appName: "ACME", version: "1.0.0" };
+    const normalConfig = { ...baseConfig };
+    const frozenConfig = Object.freeze({ ...baseConfig });
+    const sealedConfig = Object.seal({ ...baseConfig });
+    const restrictedConfig = Object.preventExtensions({ ...baseConfig });
+
+    console.table({
+        Normal: {
+            Adicionar: Reflect.set(normalConfig, "mode", "dev"),
+            Remover: Reflect.deleteProperty(normalConfig, "version"),
+            Modificar: Reflect.set(normalConfig, "appName", "ACME Store")
+        },
+        preventExtensions: {
+            Adicionar: Reflect.set(restrictedConfig, "mode", "dev"),
+            Remover: Reflect.deleteProperty(restrictedConfig, "version"),
+            Modificar: Reflect.set(restrictedConfig, "appName", "ACME Store")
+        },
+        seal: {
+            Adicionar: Reflect.set(sealedConfig, "mode", "dev"),
+            Remover: Reflect.deleteProperty(sealedConfig, "version"),
+            Modificar: Reflect.set(sealedConfig, "appName", "ACME Store")
+        },
+        freeze: {
+            Adicionar: Reflect.set(frozenConfig, "mode", "dev"),
+            Remover: Reflect.deleteProperty(frozenConfig, "version"),
+            Modificar: Reflect.set(frozenConfig, "appName", "ACME Store")
+        }
+    });
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 3 — Congelamento profundo");
+    function deepFreeze(object, visited = new WeakSet()) {
+        if (object === null || (typeof object !== "object" && typeof object !== "function")) {
+            return object;
+        }
+        if (visited.has(object)) return object;
+        // O WeakSet também torna a função segura para objetos com referências circulares.
+        visited.add(object);
+
+        // Reflect.ownKeys inclui símbolos; descritores evitam executar getters.
+        for (const key of Reflect.ownKeys(object)) {
+            const descriptor = Object.getOwnPropertyDescriptor(object, key);
+            if (descriptor && Object.hasOwn(descriptor, "value")) {
+                deepFreeze(descriptor.value, visited);
+            }
+        }
+        return Object.freeze(object);
+    }
+
+    const nestedConfig = {
+        app: {
+            preferences: {
+                theme: "dark"
+            }
+        }
+    };
+    deepFreeze(nestedConfig);
+    console.log(`Raiz congelada: ${Object.isFrozen(nestedConfig)}`);
+    console.log(`Nível 2 congelado: ${Object.isFrozen(nestedConfig.app)}`);
+    console.log(`Nível 3 congelado: ${Object.isFrozen(nestedConfig.app.preferences)}`);
+    console.log(`Alteração profunda aceita: ${Reflect.set(nestedConfig.app.preferences, "theme", "light")}`);
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 4 — Perfis de usuário");
+    // Cada perfil recebe seu próprio objeto para que as restrições não se misturem.
+    const createProfile = (role) => ({ name: "Ana", role });
+    const admin = createProfile("admin");
+    const editor = Object.seal(createProfile("editor"));
+    const reader = Object.freeze(createProfile("reader"));
+
+    console.log(`admin pode adicionar: ${Reflect.set(admin, "active", true)}`);
+    console.log(`admin pode remover: ${Reflect.deleteProperty(admin, "role")}`);
+    console.log(`editor pode modificar: ${Reflect.set(editor, "name", "Ana Silva")}`);
+    console.log(`editor pode adicionar: ${Reflect.set(editor, "active", true)}`);
+    console.log(`reader pode modificar: ${Reflect.set(reader, "name", "Ana Silva")}`);
+    console.log(`reader pode remover: ${Reflect.deleteProperty(reader, "role")}`);
+    console.log({ admin, editor, reader });
+    console.groupEnd();
+}

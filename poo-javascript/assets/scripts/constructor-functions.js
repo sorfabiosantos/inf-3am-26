@@ -264,3 +264,250 @@ console.groupEnd();
 
 // 6. (Extra) Compare Symbol vs. #private: crie uma classe com ambos e
 //    tente acessar cada um de fora. Qual é realmente privado?
+
+// =====================================================
+// RESOLUÇÕES — Semana 6
+// =====================================================
+
+{
+    console.group("Exercício 1 — Função construtora Book");
+    // O método fica no prototype e é compartilhado pelas três instâncias.
+    function Book(title, author, year) {
+        this.title = title;
+        this.author = author;
+        this.year = year;
+    }
+    Book.prototype.displayInfo = function () {
+        return `${this.title}, de ${this.author} (${this.year})`;
+    };
+
+    const books = [
+        new Book("Dom Casmurro", "Machado de Assis", 1899),
+        new Book("O Cortiço", "Aluísio Azevedo", 1890),
+        new Book("Capitães da Areia", "Jorge Amado", 1937)
+    ];
+    books.forEach((book) => console.log(book.displayInfo()));
+    console.log(`Método compartilhado: ${books[0].displayInfo === books[1].displayInfo}`);
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 2 — Person → Student com call()");
+    function Person(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+    Person.prototype.introduce = function () {
+        return `Sou ${this.name}, tenho ${this.age} anos`;
+    };
+
+    function Student(name, age, course) {
+        // call reutiliza o construtor base, inicializando this como o novo Student.
+        Person.call(this, name, age);
+        this.course = course;
+    }
+    Student.prototype = Object.create(Person.prototype);
+    Student.prototype.constructor = Student;
+    Student.prototype.describeCourse = function () {
+        return `${this.introduce()} e estudo ${this.course}.`;
+    };
+
+    const student = new Student("Lia", 20, "Análise e Desenvolvimento de Sistemas");
+    console.log(student.describeCourse());
+    console.log(`instanceof Student: ${student instanceof Student}`);
+    console.log(`instanceof Person: ${student instanceof Person}`);
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 3 — Vehicle → Car: construtor e class");
+    // A configuração manual do prototype equivale à ligação feita por extends.
+    function VehicleConstructor(type) {
+        this.type = type;
+    }
+    VehicleConstructor.prototype.start = function () {
+        return `${this.type} ligado.`;
+    };
+
+    function CarConstructor(type, doors) {
+        VehicleConstructor.call(this, type);
+        this.doors = doors;
+    }
+    CarConstructor.prototype = Object.create(VehicleConstructor.prototype);
+    CarConstructor.prototype.constructor = CarConstructor;
+    CarConstructor.prototype.honk = function () {
+        return "Biii!";
+    };
+
+    class VehicleClass {
+        constructor(type) {
+            this.type = type;
+        }
+        start() {
+            return `${this.type} ligado.`;
+        }
+    }
+    class CarClass extends VehicleClass {
+        constructor(type, doors) {
+            super(type);
+            this.doors = doors;
+        }
+        honk() {
+            return "Biii!";
+        }
+    }
+
+    const carByConstructor = new CarConstructor("Carro", 4);
+    const carByClass = new CarClass("Carro", 4);
+    console.log(`Construtor: ${carByConstructor.start()} ${carByConstructor.honk()} Portas: ${carByConstructor.doors}`);
+    console.log(`class: ${carByClass.start()} ${carByClass.honk()} Portas: ${carByClass.doors}`);
+    console.log(`Ambos herdam de Vehicle: ${carByConstructor instanceof VehicleConstructor && carByClass instanceof VehicleClass}`);
+    console.log("A sintaxe class reduz o código de herança; ambos usam protótipos.");
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 4 — Hierarquia de produtos");
+    // getInfo é sobrescrito nas subclasses: o mesmo método apresenta dados específicos.
+    class Product {
+        constructor(id, name, price) {
+            this.id = id;
+            this.name = name;
+            this.price = price;
+        }
+        calculateDiscount(percentage) {
+            return this.price * (1 - percentage / 100);
+        }
+        getInfo() {
+            return `${this.name} — R$ ${this.price.toFixed(2)}`;
+        }
+    }
+
+    class PhysicalProduct extends Product {
+        constructor(id, name, price, weight) {
+            super(id, name, price);
+            this.weight = weight;
+        }
+        calculateShipping() {
+            return this.weight * 5;
+        }
+        getInfo() {
+            return `${super.getInfo()} | ${this.weight} kg | Frete: R$ ${this.calculateShipping().toFixed(2)}`;
+        }
+    }
+
+    class DigitalProduct extends Product {
+        constructor(id, name, price, fileSizeMB) {
+            super(id, name, price);
+            this.fileSizeMB = fileSizeMB;
+        }
+        getDownloadLink() {
+            return `https://acme.com/download/${this.id}`;
+        }
+        getInfo() {
+            return `${super.getInfo()} | ${this.fileSizeMB} MB | ${this.getDownloadLink()}`;
+        }
+    }
+
+    const products = [
+        new PhysicalProduct(1, "Cadeira Gamer", 1299.9, 12),
+        new PhysicalProduct(2, 'Monitor 27"', 1899.9, 5),
+        new DigitalProduct(3, "Curso de JavaScript", 199.9, 4500),
+        new DigitalProduct(4, "E-book POO", 49.9, 15)
+    ];
+    products.forEach((product) => console.log(product.getInfo()));
+    console.log(`Desconto de 15%: R$ ${products[0].calculateDiscount(15).toFixed(2)}`);
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 5 (Extra) — Hierarquia com campos privados");
+    // Campos #private são acessíveis na classe base; subclasses usam os getters públicos.
+    class PrivateProduct {
+        #id;
+        #price;
+
+        constructor(id, name, price) {
+            this.#id = id;
+            this.name = name;
+            this.#price = price;
+        }
+        get id() {
+            return this.#id;
+        }
+        get price() {
+            return this.#price;
+        }
+        set price(value) {
+            if (!Number.isFinite(value) || value < 0) {
+                throw new RangeError("O preço deve ser um número não negativo.");
+            }
+            this.#price = value;
+        }
+        calculateDiscount(percentage) {
+            return this.#price * (1 - percentage / 100);
+        }
+        getInfo() {
+            return `${this.name} — R$ ${this.#price.toFixed(2)}`;
+        }
+    }
+
+    class PrivatePhysicalProduct extends PrivateProduct {
+        constructor(id, name, price, weight) {
+            super(id, name, price);
+            this.weight = weight;
+        }
+        calculateShipping() {
+            return this.weight * 5;
+        }
+    }
+    class PrivateDigitalProduct extends PrivateProduct {
+        constructor(id, name, price, fileSizeMB) {
+            super(id, name, price);
+            this.fileSizeMB = fileSizeMB;
+        }
+        getDownloadLink() {
+            return `https://acme.com/download/${this.id}`;
+        }
+    }
+
+    const privateProducts = [
+        new PrivatePhysicalProduct(1, "Mouse", 89.9, 0.2),
+        new PrivatePhysicalProduct(2, "Teclado", 259.9, 0.8),
+        new PrivateDigitalProduct(3, "Curso de PHP", 99.9, 1200),
+        new PrivateDigitalProduct(4, "E-book JavaScript", 39.9, 20)
+    ];
+    privateProducts.forEach((product) => {
+        console.log(`${product.getInfo()} | getter id=${product.id}, price=${product.price}`);
+    });
+    console.log(`id aparece como propriedade comum: ${Object.hasOwn(privateProducts[0], "id")}`);
+    console.log(`Desconto: R$ ${privateProducts[0].calculateDiscount(10).toFixed(2)}`);
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 6 (Extra) — Symbol e #private");
+    // Symbol evita colisões de nomes, mas pode ser descoberto via getOwnPropertySymbols.
+    const legacySecret = Symbol("legacySecret");
+    class PrivacyExample {
+        #privateSecret;
+
+        constructor(secret) {
+            this.#privateSecret = secret;
+            this[legacySecret] = secret;
+        }
+        readPrivateSecret() {
+            return this.#privateSecret;
+        }
+    }
+
+    const privacyExample = new PrivacyExample("valor confidencial");
+    const discoveredSymbol = Object.getOwnPropertySymbols(privacyExample)[0];
+    console.log(`Valor via método da classe: ${privacyExample.readPrivateSecret()}`);
+    console.log(`Symbol recuperável externamente: ${privacyExample[discoveredSymbol]}`);
+    console.log(`Símbolos enumeráveis via Object.keys: ${Object.keys(privacyExample).length}`);
+    console.log(`Símbolos recuperáveis via getOwnPropertySymbols: ${Object.getOwnPropertySymbols(privacyExample).length}`);
+    console.log(`Campo #private aparece como propriedade própria: ${Object.hasOwn(privacyExample, "#privateSecret")}`);
+    console.log("O campo #private não pode ser referenciado fora da classe; Symbol pode ser descoberto e lido.");
+    console.groupEnd();
+}

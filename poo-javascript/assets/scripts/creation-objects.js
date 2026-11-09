@@ -144,3 +144,160 @@ console.groupEnd();
 // 5. (Extra) Refatore os dados do cliente para usar optional chaining e
 //    nullish coalescing. Teste com objetos que possuem e que não possuem
 //    as propriedades aninhadas.
+
+// =====================================================
+// RESOLUÇÕES — Semana 2
+// =====================================================
+
+{
+    console.group("Exercício 1 — Quatro formas de criar product");
+    // As quatro formas produzem objetos equivalentes, mas com sintaxes diferentes.
+    const productByLiteral = { name: "Mouse", price: 89.9, category: "Periférico" };
+
+    const productByConstructor = new Object();
+    productByConstructor.name = "Mouse";
+    productByConstructor.price = 89.9;
+    productByConstructor.category = "Periférico";
+
+    function createProduct(name, price, category) {
+        return { name, price, category };
+    }
+    const productByFactory = createProduct("Mouse", 89.9, "Periférico");
+
+    const productPrototype = { category: "Periférico" };
+    // Object.create herda category do protótipo e mantém name e price próprios.
+    const productByCreate = Object.assign(Object.create(productPrototype), {
+        name: "Mouse",
+        price: 89.9
+    });
+
+    console.table([
+        { forma: "Literal", produto: `${productByLiteral.name} — R$ ${productByLiteral.price}` },
+        { forma: "new Object()", produto: `${productByConstructor.name} — R$ ${productByConstructor.price}` },
+        { forma: "Factory function", produto: `${productByFactory.name} — R$ ${productByFactory.price}` },
+        { forma: "Object.create()", produto: `${productByCreate.name} — R$ ${productByCreate.price}` }
+    ]);
+    console.log("A factory facilita criar vários objetos com a mesma estrutura.");
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 2 — Factory de usuários");
+    // A factory centraliza a estrutura e cria uma cópia dos dados para cada usuário.
+    function createUser(name, email, role) {
+        return {
+            name,
+            email,
+            role,
+            displayData() {
+                return `${this.name} <${this.email}> — ${this.role}`;
+            }
+        };
+    }
+
+    const users = [
+        createUser("Ana", "ana@acme.com", "admin"),
+        createUser("Bruno", "bruno@acme.com", "editor"),
+        createUser("Carla", "carla@acme.com", "reader")
+    ];
+    users.forEach((user) => console.log(user.displayData()));
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 3 — Conta com saldo privado");
+    function createAccount(initialBalance = 0) {
+        if (!Number.isFinite(initialBalance) || initialBalance < 0) {
+            throw new RangeError("O saldo inicial deve ser um número não negativo.");
+        }
+
+        // balance fica no closure e não é uma propriedade pública do objeto retornado.
+        let balance = initialBalance;
+        return {
+            get balance() {
+                return balance;
+            },
+            deposit(amount) {
+                // A validação impede valores inválidos antes de alterar o estado.
+                if (!Number.isFinite(amount) || amount <= 0) {
+                    console.warn("O depósito deve ser um valor positivo.");
+                    return false;
+                }
+                balance += amount;
+                return true;
+            },
+            withdraw(amount) {
+                if (!Number.isFinite(amount) || amount <= 0 || amount > balance) {
+                    console.warn("Saque inválido ou saldo insuficiente.");
+                    return false;
+                }
+                balance -= amount;
+                return true;
+            }
+        };
+    }
+
+    const account = createAccount(500);
+    account.deposit(200);
+    account.withdraw(150);
+    console.log(`Saldo após operações: R$ ${account.balance.toFixed(2)}`);
+    console.log(`Campo interno _balance exposto: ${Object.hasOwn(account, "_balance")}`);
+    console.log(`Saque acima do saldo aceito? ${account.withdraw(1000)}`);
+    console.log(`Saldo final: R$ ${account.balance.toFixed(2)}`);
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 4 — Propriedades com defineProperty");
+    const config = {};
+    // Os descritores controlam escrita, enumeração e exclusão separadamente.
+    Object.defineProperties(config, {
+        version: {
+            value: "1.0.0",
+            writable: false,
+            enumerable: true,
+            configurable: true
+        },
+        apiKey: {
+            value: "acme-demo-key",
+            writable: true,
+            enumerable: false,
+            configurable: true
+        },
+        mode: {
+            value: "production",
+            writable: true,
+            enumerable: true,
+            configurable: false
+        }
+    });
+
+    console.log(`version somente leitura: ${!Reflect.set(config, "version", "2.0.0")}`);
+    console.log(`version preservada: ${config.version}`);
+    console.log(`apiKey aparece em Object.keys: ${Object.keys(config).includes("apiKey")}`);
+    console.log(`apiKey aparece em for...in: ${(() => {
+        for (const key in config) {
+            if (key === "apiKey") return true;
+        }
+        return false;
+    })()}`);
+    console.log(`mode pode ser deletado: ${Reflect.deleteProperty(config, "mode")}`);
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 5 (Extra) — Acesso seguro a dados opcionais");
+    // ?. interrompe o acesso quando falta um nível; ?? só substitui null ou undefined.
+    const customers = [
+        { name: "Ana", address: { city: "Pelotas", street: "Rua A" } },
+        { name: "Bruno", address: null },
+        { name: "Carla" }
+    ];
+
+    customers.forEach((customer) => {
+        const city = customer.address?.city ?? "não informada";
+        const street = customer.address?.street ?? "não informada";
+        console.log(`${customer.name}: ${street}, ${city}`);
+    });
+    console.groupEnd();
+}

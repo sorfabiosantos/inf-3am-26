@@ -95,3 +95,100 @@ console.groupEnd();
 // 4. Crie `library` e dois `book` herdando dele.
 //    Adicione `renewCatalog()` ao protótipo DEPOIS de criar os livros.
 //    Demonstre que ambos passam a ter o método.
+
+// =====================================================
+// RESOLUÇÕES — Semana 1
+// =====================================================
+
+{
+    console.group("Exercício 1 — Herança de person");
+    // Object.create faz cada pessoa delegar ao mesmo objeto de métodos.
+    const person = {
+        name: "",
+        age: 0,
+        introduce() {
+            return `Olá, me chamo ${this.name} e tenho ${this.age} anos`;
+        }
+    };
+
+    const people = [
+        { name: "Ana", age: 22 },
+        { name: "Bruno", age: 30 },
+        { name: "Carla", age: 25 }
+    ].map((data) => Object.assign(Object.create(person), data));
+
+    people.forEach((individual) => console.log(individual.introduce()));
+    console.log(`Método herdado: ${!Object.hasOwn(people[0], "introduce")}`);
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 2 — Vehicle → Car → myCar");
+    // Cada objeto estende o anterior; myCar recebe propriedades e métodos pela cadeia.
+    const Vehicle = {
+        type: "vehicle",
+        start() {
+            return `${this.model} ligado.`;
+        }
+    };
+
+    const Car = Object.create(Vehicle);
+    Car.wheels = 4;
+    Car.drive = function () {
+        return `${this.model} está dirigindo.`;
+    };
+
+    const myCar = Object.create(Car);
+    myCar.model = "Civic";
+    myCar.year = 2024;
+
+    console.log(myCar.start());
+    console.log(myCar.drive());
+    console.log(`myCar → Car: ${Object.getPrototypeOf(myCar) === Car}`);
+    console.log(`Car → Vehicle: ${Object.getPrototypeOf(Car) === Vehicle}`);
+    console.log(`Rodas herdadas: ${myCar.wheels}`);
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 3 — Sombreamento de propriedade");
+    // Atribuir grade cria uma propriedade própria que tem precedência sobre a herdada.
+    const studentPrototype = {
+        grade: 7,
+        calculateAverage() {
+            return this.grade;
+        }
+    };
+
+    const student = Object.create(studentPrototype);
+    student.grade = 9.5;
+
+    console.log(`Média do student: ${student.calculateAverage()}`);
+    console.log(`Nota do protótipo: ${studentPrototype.grade}`);
+    console.log(`grade é própria do student: ${Object.hasOwn(student, "grade")}`);
+    console.log(`calculateAverage é própria: ${Object.hasOwn(student, "calculateAverage")}`);
+    console.groupEnd();
+}
+
+{
+    console.group("Exercício 4 — Método adicionado em runtime");
+    // A cadeia é dinâmica: livros já criados também enxergam novos métodos do protótipo.
+    const library = {
+        catalog: []
+    };
+    const book1 = Object.create(library);
+    book1.title = "Clean Code";
+    const book2 = Object.create(library);
+    book2.title = "Refactoring";
+
+    library.renewCatalog = function () {
+        // Cada livro cria seu próprio catálogo em vez de compartilhar o array herdado.
+        this.catalog = [this.title, "(catálogo renovado)"];
+        return this.catalog;
+    };
+
+    console.log(`book1: ${book1.renewCatalog().join(" ")}`);
+    console.log(`book2: ${book2.renewCatalog().join(" ")}`);
+    console.log(`Método é herdado: ${!Object.hasOwn(book1, "renewCatalog")}`);
+    console.groupEnd();
+}
